@@ -353,7 +353,15 @@
                 <div class="template-links">
                     <a href="/template.xlsx" download="template.xlsx" class="upload-link">
                         <span class="icon">📥</span>
-                        Tải mẫu Excel (.xlsx)
+                        Tải mẫu Excel.xlsx (.xlsx)
+                    </a>
+                    <a href="/template.csv" download="template.xls" class="upload-link csv-link">
+                        <span class="icon">📥</span>
+                        Tải mẫu Excel.xls (.xls)
+                    </a>
+                    <a href="/template.csv" download="template.xlsm" class="upload-link csv-link">
+                        <span class="icon">📥</span>
+                        Tải mẫu Excel.xlsm (.xlsm)
                     </a>
                     <a href="/template.csv" download="template.csv" class="upload-link csv-link">
                         <span class="icon">📥</span>
@@ -365,7 +373,7 @@
                     <div class="form-group">
                         <label for="file">Chọn file Excel (.xlsx) hoặc CSV (.csv)</label>
                         <div class="file-input-wrapper">
-                            <input type="file" name="file" id="file" accept=".xlsx,.csv" required class="file-input">
+                            <input type="file" name="file" id="file" accept=".xlsx,.xlsm,.xls,.csv" required class="file-input">
                             <div class="file-input-display">
                                 <span class="file-icon">📁</span>
                                 <span id="fileName">Nhấp để chọn file Excel hoặc CSV...</span>
@@ -438,21 +446,21 @@
             const fileName = event.target.files[0]?.name || "Nhấp để chọn file Excel hoặc CSV...";
             document.getElementById("fileName").textContent = fileName;
         });
-
+    
         // Handle file upload
         document.getElementById("uploadForm").addEventListener("submit", function(event) {
             event.preventDefault();
             const fileInput = document.getElementById("file");
             const formData = new FormData();
             formData.append("file", fileInput.files[0]);
-
+    
             const loadingEl = document.getElementById("uploadLoading");
             const resultEl = document.getElementById("uploadResult");
             
             loadingEl.classList.add("show");
             resultEl.textContent = "";
             resultEl.className = "result-message";
-
+    
             fetch("/faqs/upload", {
                 method: "POST",
                 body: formData
@@ -460,10 +468,10 @@
             .then(async res => {
                 const data = await res.json();
                 if (!res.ok) {
-                    // Nếu có lỗi, ném ra một Error để khối .catch() bắt được
-                    throw new Error(data.error || 'Đã có lỗi không xác định.');
+                    // Dùng ErrorResponseDto: lấy message thay vì error
+                    throw new Error(data.message || 'Đã có lỗi không xác định.');
                 }
-                return data; // Nếu thành công, chuyển data tới khối .then() tiếp theo
+                return data;
             })
             .then(data => {
                 loadingEl.classList.remove("show");
@@ -478,25 +486,25 @@
                 resultEl.classList.add("error");
             });
         });
-
+    
         // Handle add FAQ manually
         document.getElementById("addFAQForm").addEventListener("submit", function(event) {
             event.preventDefault();
-
+    
             const faq = {
                 code: document.getElementById("code").value,
                 question: document.getElementById("question").value,
                 answer: document.getElementById("answer").value,
                 note: document.getElementById("note").value
             };
-
+    
             const loadingEl = document.getElementById("addLoading");
             const resultEl = document.getElementById("addResult");
             
             loadingEl.classList.add("show");
             resultEl.textContent = "";
             resultEl.className = "result-message";
-
+    
             fetch("/faqs/add", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -505,7 +513,7 @@
             .then(async res => {
                 const data = await res.json();
                 if (!res.ok) {
-                    throw new Error(data.error || 'Đã có lỗi không xác định.');
+                    throw new Error(data.message || 'Đã có lỗi không xác định.');
                 }
                 return data;
             })
@@ -522,5 +530,6 @@
             });
         });
     </script>
+    
 </body>
 </html>

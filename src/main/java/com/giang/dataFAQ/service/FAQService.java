@@ -46,12 +46,17 @@ public class FAQService {
             throw new InvalidRequestException("Không thể xác định loại file do thiếu tên file.");
         }
 
-        if (originalFilename.toLowerCase().endsWith(".xlsx")) {
+        String lowerCaseFilename = originalFilename.toLowerCase();
+
+        if (lowerCaseFilename.endsWith(".xlsx") ||
+            lowerCaseFilename.endsWith(".xlsb") ||
+            lowerCaseFilename.endsWith(".xlsm") ||
+            lowerCaseFilename.endsWith(".xls")) {
             parseExcelFile(file);
-        } else if (originalFilename.toLowerCase().endsWith(".csv")) {
+        } else if (lowerCaseFilename.endsWith(".csv")) {
             parseCsvFile(file);
         } else {
-            throw new InvalidRequestException("Loại file không được hỗ trợ. Vui lòng tải lên file .xlsx hoặc .csv.");
+            throw new InvalidRequestException("Loại file không được hỗ trợ. Vui lòng tải lên file Excel (.xlsx, .xlsb, .xlsm, .xls) hoặc .csv.");
         }
     }
 
@@ -106,8 +111,11 @@ public class FAQService {
     }
 
     private void validateHeader(String hStt, String hCode, String hQuestion, String hAnswer, String hNote) {
-        if (!"No.".equalsIgnoreCase(hStt.trim()) || !"Code".equalsIgnoreCase(hCode.trim()) || !"Question".equalsIgnoreCase(hQuestion.trim())
-                || !"Answer".equalsIgnoreCase(hAnswer.trim()) || !"Note".equalsIgnoreCase(hNote.trim())) {
+        if (!"No.".equalsIgnoreCase(hStt.trim()) 
+            || !"Code".equalsIgnoreCase(hCode.trim()) 
+            || !"Question".equalsIgnoreCase(hQuestion.trim())
+            || !"Answer".equalsIgnoreCase(hAnswer.trim())
+            || !"Note".equalsIgnoreCase(hNote.trim())) {
             throw new InvalidRequestException("Định dạng file không hợp lệ: Tiêu đề phải là: No. | Code | Question | Answer | Note");
         }
     }

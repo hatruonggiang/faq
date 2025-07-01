@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "tbl_faq_test_rich_text")
+@Table(name = "tbl_faq_rich")
 public class FAQ {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
